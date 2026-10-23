@@ -1,0 +1,153 @@
+SSH_Keys_Generator 1.5.1
+Windows 10/11, 64-bit.
+A utility that makes it easier to set up SSH key authentication for logging in to a remote server.
+(C) Adam Wojcieszonek 2026
+Contact: adam@eksploracja.org.pl
+Project: https://github.com/adamzend/SSH_Keys_Generator
+License: GNU General Public License v3.0. See LICENSE for the full terms.
+
+INSTALLATION
+Run SSH_Keys_Generator_Setup.exe. Installation is per user and does not require
+Windows administrator rights. Python is not needed. PuTTY is optional and is
+only required for the Open PuTTY button; key management works without it.
+The portable version is SSH_Keys_Generator.exe.
+
+CHECK FOR UPDATES
+Click Check for updates near User guide and About. The application contacts
+this project's public GitHub Releases API and compares the latest stable
+release with your installed version. No account, token or server data is sent.
+You may download the latest installer, including re-downloading your current
+version. Older releases are not offered as updates. Choose where to save it.
+The download is performed in the background and checked against its size and
+SHA256 digest provided by GitHub. Only a verified download replaces the chosen
+destination file. Failed or interrupted downloads leave no partial installer.
+The installer does not run automatically. Finish your work, close the program,
+then run the downloaded file. Profiles and keys are preserved during upgrade.
+Checks are manual; there is no startup polling. Internet access is required.
+Network errors or GitHub request limits are reported; retry later if necessary.
+SHA256 checks download integrity; it is not a publisher's code signature.
+
+FIRST CONNECTION AND KEY GENERATION
+1. Enter the host, SSH port and username. Select Password or Key authentication.
+   Account password is your server password. Key passphrase unlocks a local key.
+   Leave Sudo password empty for passwordless sudo, or when it is the same as
+   the account password used to connect. For key authentication, enter a sudo
+   password if the server requires one.
+2. Click Connect and check. On the first connection, compare the SERVER key
+   fingerprint with your provider's console or a trusted PuTTY connection.
+   A changed known server key is rejected.
+3. Enter and confirm a NEW key passphrase of at least 12 characters. Choose a
+   local key folder and a short comment. Keep a safe backup of key and passphrase.
+4. Optionally select Disable server password login after testing the new key.
+   This affects SSH for ALL users on that server, not email or website passwords.
+5. Click Generate -> add -> test. A new RSA 3072 key is generated locally, its
+   public part is installed for the connected account, and a separate key-only
+   connection is tested. The private key never goes to the server.
+6. Save a PuTTY session or open PuTTY from the application.
+
+KEY FILES AND COMPATIBILITY
+id_rsa.ppk: encrypted PuTTY private key (PPK v3; PuTTY 0.75 or later).
+id_rsa: the same encrypted private key in OpenSSH format.
+id_rsa.pub: public key suitable for the server.
+The generated folder has restricted local permissions. The application cannot
+recover forgotten key passphrases. Importing private PPK v2/v3 keys supports RSA;
+use OpenSSH for other private key types. Public key entry supports types accepted
+by the server. The application does not install PuTTY automatically.
+
+CONTROLLED SSH PASSWORD DISABLING
+Requires Linux, OpenSSH, Python 3, root/sudo privileges and systemd.
+The application checks SSH configuration, installs and tests the new key, arms
+an independent rollback timer, validates the changed configuration and reloads
+SSH. It then verifies another key-only connection before committing the change.
+If verification fails, allow at least 150 seconds for rollback. Keep a provider
+console or another known working connection available for recovery.
+Configurations with Match sections or unusual Include directives are refused
+for automatic password disabling and need manual administrator review.
+A confirmed key connection does not prove every other user's access will work.
+
+MANAGING SERVER KEYS
+Select the server account and click Refresh. The list shows key entries in
+supported authorized_keys files, including fingerprint, comment and restrictions.
+You can add one OpenSSH public key or remove a selected entry. A server-side
+backup is created before modification. Concurrent changes require a refresh.
+Removal of the account's last key or the current connection key is refused.
+The list does not cover every possible access source: certificate authority
+access and AuthorizedKeysCommand are separate mechanisms. Unsupported paths,
+symlinks and keys outside the account home directory are rejected.
+
+SERVER PROFILES
+Save profile stores the host, port, username, authentication method and private
+key path under a name. It does not save account/sudo passwords, passphrases or
+private key contents. New clears the form. Delete profile removes only its
+local saved settings, not keys, PuTTY sessions or server accounts.
+Selecting another profile disconnects the old server, clears password fields
+and resets the option to disable password login. Click Connect and check to
+connect explicitly. Switching profiles is blocked during operations.
+The last selected saved profile is loaded at startup without connecting.
+The single-profile file from version 1.0 is migrated automatically.
+
+EXPORTING PROFILES WITHOUT KEYS
+Save any form changes, then click Export profiles to export all saved profiles
+as JSON. Import profiles reads that JSON on another computer. Duplicate names
+can be replaced, skipped, or the whole import cancelled. Invalid files are
+rejected before saving. The JSON contains hostnames, usernames and local paths;
+it is not encrypted. Do not publish it. Transfer private keys separately and
+update their paths on the destination computer.
+
+ENCRYPTED PROFILES AND PRIVATE KEYS BUNDLE
+1. Save your profiles and verify every private key path.
+2. Click Export with keys. Enter and confirm a separate bundle password of at
+   least 12 characters (a long, unique phrase is recommended). Save the .sshkg.
+3. On another computer, click Import with keys and enter that bundle password.
+   Choose how to handle duplicate profile names if prompted.
+4. Select an imported profile and connect. Private key paths are adjusted
+   automatically. Verify the server fingerprint on the new computer.
+The bundle includes all saved profiles and precisely the private key files
+referenced in them, including paths in Password profiles. It does not search
+other folders. A missing or unrecognized key aborts export. Shared key files
+are included once. A Password profile without a key path needs no key file.
+The bundle password does not replace existing key passphrases: original key
+bytes and encryption are preserved. You still need the original key passphrase
+when connecting. A key that was unencrypted remains unencrypted after import.
+Account passwords, sudo passwords, key passphrases, known server keys and PuTTY
+sessions are not included. Bundle passwords cannot be recovered; keep them
+separately from the bundle. Do not send a bundle and password together.
+Imported keys are saved in a unique, access-restricted directory below:
+%LOCALAPPDATA%\SSH_Keys_Generator\imported_keys
+Existing key files are never overwritten or deleted. Replacing the active
+profile with changed settings disconnects its old connection. Import performs
+no server operation. A wrong password or modified bundle is rejected before
+writing anything. An ordinary save failure rolls back newly created key files.
+Bundle encryption is AES-256-GCM. The password-derived key uses scrypt with
+N=131072, r=8, p=1 (approximately 128 MiB RAM), a random 16-byte salt and a random
+12-byte nonce per export. Profile metadata is encrypted too. No plaintext
+intermediate archive is written. Limits: 32 MiB bundle, 1 MiB per key, 1000 profiles.
+
+DATA, BACKUPS AND PRIVACY
+Local profile settings and known server keys are stored in:
+%LOCALAPPDATA%\SSH_Keys_Generator
+Passwords are not saved in profiles, logs or PuTTY sessions. They remain in
+process memory during use. This application does not use AI, ChatGPT or paid APIs.
+Server authorized_keys backups: /var/backups/ssh-keys-generator/
+Server SSH configuration backups/transactions: /var/lib/ssh-keys-generator/
+Those backups are root-only and are not automatically removed. Uninstallation
+leaves your keys, profiles, known hosts and PuTTY sessions in place.
+
+LIMITATIONS AND VERIFICATION
+Test with a non-production server and available recovery console first.
+Automated tests include local PuTTY interoperability, key restrictions, profile
+migration, encrypted bundle round trips, tamper detection, rollback and Windows
+file permissions. This is not a security certification or a guarantee for every
+custom Linux setup. No production VPS was modified to test this release.
+The Windows executables are not signed with a commercial code-signing certificate.
+
+BUILDING
+See README.md and build.ps1 in the source repository. Documentation and LICENSE
+are embedded in the standalone executable and included in the installer.
+
+TECHNICAL REFERENCES
+PuTTY: https://www.chiark.greenend.org.uk/~sgtatham/putty/
+PPK: https://www.puttyssh.org/0.83/htmldoc/AppendixC.html
+Paramiko: https://docs.paramiko.org/en/stable/api/client.html
+AES-GCM: https://cryptography.io/en/latest/hazmat/primitives/aead/
+scrypt: https://www.rfc-editor.org/rfc/rfc7914.html

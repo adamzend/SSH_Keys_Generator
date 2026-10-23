@@ -1,0 +1,190 @@
+SSH_Keys_Generator 1.5.1
+Program dla Windows 10/11, 64-bit.
+Program narzędziowy ułatwiający konfigurację logowania do zdalnego serwera za pomocą klucza SSH.
+
+AUTOR I LICENCJA
+Przycisk About obok instrukcji zawiera informacje o autorze, kontakt i licencję.
+(C) Adam Wojcieszonek 2026
+Kontakt: adam@eksploracja.org.pl
+Projekt: https://github.com/adamzend/SSH_Keys_Generator
+Licencja: GNU General Public License v3.0 — pełny tekst w pliku LICENSE.
+
+SPRAWDZANIE AKTUALIZACJI
+Kliknij „Sprawdź aktualizacje” obok instrukcji i About. Program sprawdza
+najnowsze stabilne wydanie w publicznym API GitHuba i porównuje numer wersji.
+Nie wymaga konta ani tokenu; nie wysyła danych serwerów, profili ani kluczy.
+Możesz pobrać najnowszy instalator, także ponownie dla aktualnej wersji.
+Starsza wersja nie jest proponowana jako aktualizacja. Wskaż miejsce zapisu.
+Program pobiera plik w tle, sprawdza rozmiar i SHA256 udostępnione przez GitHub,
+a następnie zapisuje zweryfikowany instalator. Błędne pobranie nie nadpisuje
+istniejącego pliku. Tymczasowe, niekompletne pliki są usuwane po błędzie.
+Instalacja nie startuje automatycznie. Zakończ pracę, zamknij program i uruchom
+pobrany instalator. Aktualizacja zachowuje profile i klucze.
+Sprawdzanie jest ręczne, bez odpytywania przy starcie. Wymaga internetu.
+Błędy sieci i limity GitHuba są zgłaszane; w razie potrzeby spróbuj później.
+Suma SHA256 sprawdza integralność pobrania; nie jest podpisem wydawcy.
+
+INSTALACJA
+Uruchom SSH_Keys_Generator_Setup.exe. Instalacja odbywa się dla bieżącego
+użytkownika, bez uprawnień administratora Windows. Powstaje skrót na pulpicie
+i w menu Start. Python nie jest wymagany. PuTTY jest osobnym, opcjonalnym
+programem: jest potrzebne tylko do otwierania terminala przyciskiem PuTTY.
+Sam generator i zarządzanie kluczami działają bez zainstalowanego PuTTY.
+Wersję przenośną uruchamia się plikiem SSH_Keys_Generator.exe.
+
+PROFILE WIELU SERWERÓW
+Wypełnij dane połączenia i kliknij „Zapisz profil…”. Podaj własną nazwę,
+np. „VPS” lub „Serwer domowy”. Nadpisanie istniejącej nazwy wymaga potwierdzenia.
+Wybierz serwer z listy „Profil serwera”, wpisz wymagane hasła i kliknij
+„Połącz i sprawdź”. Sam wybór profilu nie nawiązuje połączenia.
+Zmiana profilu rozłącza poprzedni serwer, czyści hasła i odznacza wyłączanie
+logowania hasłem. Podczas wykonywania operacji nie można zmienić profilu.
+„Nowy” czyści formularz; „Usuń profil” usuwa wyłącznie lokalny zapis profilu,
+nie usuwa plików kluczy, kont, sesji PuTTY ani danych na serwerze.
+Ostatnio wybrany zapisany profil jest wczytywany przy uruchamianiu programu.
+Zapis z wersji 1.0 zostanie zaimportowany jako „Poprzednie połączenie”.
+Na innym komputerze profile i klucze trzeba przenieść oddzielnie; ścieżka
+pliku klucza może wymagać poprawienia. Instalator nie zawiera Twoich danych.
+Przycisk „Instrukcja” otwiera tę pomoc bez internetu. Instrukcja jest również
+wbudowana w przenośny plik EXE i dołączona jako plik do instalacji.
+
+ZASZYFROWANY PAKIET PROFILI Z KLUCZAMI
+1. Zapisz aktualne profile. Sprawdź, czy każdy ma właściwą ścieżkę pliku klucza.
+2. Kliknij „Eksportuj z kluczami…”. Podaj i powtórz osobne hasło pakietu
+   (minimum 12 znaków; zalecana długa, unikalna fraza). Zapisz plik .sshkg.
+3. Na drugim komputerze wybierz „Importuj z kluczami…” i podaj hasło pakietu.
+   Wybierz zastępowanie lub pomijanie duplikatów, jeśli program o to zapyta.
+4. Wybierz zaimportowany profil i połącz się. Ścieżki kluczy są poprawiane
+   automatycznie. Przy pierwszym połączeniu zweryfikuj odcisk klucza serwera.
+Pakiet obejmuje wszystkie zapisane profile i dokładnie te pliki prywatne,
+które wskazano w ich polach „Plik prywatny” (również w profilach typu Hasło).
+Nie przeszukuje innych katalogów. Brak lub nierozpoznany plik przerywa eksport.
+Wspólny klucz kilku profili jest przechowywany tylko raz. Profil typu Hasło
+bez wskazanego klucza jest przenoszony bez pliku klucza.
+Hasło pakietu jest inne niż hasło klucza SSH. Istniejące szyfrowanie kluczy
+pozostaje bez zmian: po imporcie nadal potrzebujesz ich dotychczasowych haseł.
+Pakiet nie zawiera haseł logowania, sudo, haseł kluczy ani sesji PuTTY.
+Hasła pakietu nie można odzyskać. Zachowaj je oddzielnie i nie wysyłaj razem
+z pakietem. Klucze, które wcześniej nie miały hasła, po imporcie nadal go nie mają.
+Nowe pliki kluczy trafiają do unikalnego folderu w:
+%LOCALAPPDATA%\SSH_Keys_Generator\imported_keys
+Folder ma ograniczone uprawnienia bieżącego użytkownika Windows. Import nie
+nadpisuje ani nie usuwa dotychczasowych kluczy. Zastąpienie aktywnego profilu
+rozłącza dotychczasowe połączenie. Import nie zmienia niczego na serwerze.
+Błędne hasło lub zmodyfikowany pakiet powoduje odmowę importu przed zapisem.
+Pakiet: AES-256-GCM; klucz z hasła: scrypt N=131072, r=8, p=1 (ok. 128 MiB RAM),
+losowa sól 16 bajtów i nonce 12 bajtów dla każdego eksportu. Metadane profili
+również są szyfrowane. Program nie zapisuje jawnego archiwum tymczasowego.
+Limit pakietu: 32 MiB, pojedynczego klucza: 1 MiB, liczby profili: 1000.
+Opis AES-GCM: https://cryptography.io/en/latest/hazmat/primitives/aead/
+Opis scrypt: https://www.rfc-editor.org/rfc/rfc7914.html
+
+PRZENOSZENIE SAMYCH PROFILI NA INNY KOMPUTER
+1. Zapisz zmiany formularza przyciskiem „Zapisz profil…”. Eksport obejmuje
+   wszystkie zapisane profile, bez niezapisanych zmian formularza.
+2. Kliknij „Eksportuj profile…” i zapisz plik JSON.
+3. Na drugim komputerze zainstaluj program, kliknij „Importuj profile…”
+   i wskaż ten plik. Przy powtarzających się nazwach możesz zastąpić istniejące
+   profile, pominąć powtarzające się nazwy albo anulować cały import.
+4. Przenieś klucze prywatne oddzielnie bezpieczną metodą. Wybierz profil,
+   popraw ścieżkę klucza, zapisz profil i podaj hasło przed połączeniem.
+Plik eksportu zawiera adresy serwerów, porty, loginy, metody logowania i ścieżki
+kluczy. Nie zawiera haseł, kluczy prywatnych ani zapamiętanych kluczy serwerów.
+Nie publikuj go — zawiera informacje o Twoich serwerach. Przy pierwszym
+połączeniu z nowego komputera zweryfikuj odcisk klucza serwera.
+Import nie łączy się z serwerem i nie zmienia jego konfiguracji. Zastąpienie
+aktywnego profilu innymi ustawieniami rozłącza dotychczasowe połączenie.
+Błędny plik jest odrzucany w całości przed zapisaniem jakiegokolwiek profilu.
+
+PIERWSZE UŻYCIE
+1. Podaj adres serwera, port SSH i login. Wybierz Hasło albo Klucz.
+   Hasło konta oznacza hasło na serwerze. Hasło klucza odszyfrowuje plik lokalny.
+   Hasło sudo można zostawić puste przy NOPASSWD albo jeśli jest takie samo
+   jak hasło użyte do logowania. Przy logowaniu kluczem i sudo wymagającym hasła
+   wpisz je w polu Hasło sudo.
+2. Naciśnij Połącz i sprawdź. Przy pierwszym połączeniu porównaj identyfikator
+   klucza SERWERA z panelem dostawcy lub znanym połączeniem PuTTY.
+   Zmiana znanego klucza serwera powoduje odmowę połączenia.
+3. Podaj hasło dla NOWEGO klucza (minimum 12 znaków), powtórz je i wybierz folder.
+4. Opcjonalnie zaznacz wyłączenie haseł SSH. Dotyczy to SSH na całym serwerze,
+   a więc także innych użytkowników. Nie zmienia haseł poczty ani aplikacji WWW.
+5. Naciśnij Generuj → dodaj → przetestuj. Program generuje klucz RSA 3072,
+   dodaje część publiczną do konta, którym się połączono, i sprawdza logowanie
+   nowym, niezależnym połączeniem używającym tylko tego klucza.
+6. Zapisz sesję PuTTY lub uruchom PuTTY przyciskiem w programie.
+
+PLIKI KLUCZA
+id_rsa.ppk — klucz prywatny dla PuTTY 0.75 lub nowszego; zalecana aktualna wersja.
+id_rsa — ten sam klucz prywatny w formacie OpenSSH.
+id_rsa.pub — klucz publiczny do instalowania na serwerze.
+Oba prywatne pliki są zaszyfrowane hasłem klucza. Folder otrzymuje ograniczone
+uprawnienia Windows. Klucze powstają lokalnie; serwer otrzymuje tylko publiczną
+część. Zachowaj bezpieczną kopię pliku prywatnego i hasła. Program nie potrafi
+odzyskać zapomnianego hasła. Nie przesyłaj plików prywatnych innym osobom.
+
+ZARZĄDZANIE KLUCZAMI
+Wybierz lub wpisz konto na serwerze i naciśnij Odśwież. Licznik obejmuje wpisy
+kluczy w efektywnych plikach AuthorizedKeysFile tego konta, nie wszystkie konta
+serwera. Klucze z opcjami zachowują swoje ograniczenia. Komentarze i inne
+wiersze pliku są zachowywane. Przy ręcznym dodawaniu wklej jeden zwykły klucz
+publiczny OpenSSH (bez opcji). Program nie pozwala usunąć ostatniego wpisu ani
+klucza używanego przez jego bieżące połączenie. Przed każdą zmianą sprawdza,
+czy ktoś inny nie zmienił odczytanego pliku.
+
+WYŁĄCZANIE HASEŁ I POWRÓT AWARYJNY
+Wyłączenie haseł jest możliwe dopiero po udanym teście nowego klucza.
+Przed zmianą powstaje kopia konfiguracji i niezależny timer systemd.
+Program sprawdza składnię sshd, przeładowuje usługę (nie restartuje sieci)
+i ponownie łączy się kluczem. Dopiero wtedy anuluje powrót awaryjny.
+Jeśli test nie powiedzie się albo aplikacja utraci połączenie, konfiguracja
+ma wrócić po około 150 sekundach. Wymaga to działającego systemd i serwera.
+Mechanizm nie zastępuje konsoli awaryjnej dostawcy i nie naprawi awarii VPS.
+Nie wykonuj jednocześnie zmian sshd innymi narzędziami.
+Jeśli instalacja klucza powiedzie się, a późniejszy test nie, klucz może
+pozostać dodany; lokalne pliki i ich ścieżka pozostają dostępne w dzienniku.
+
+ZGODNOŚĆ I GRANICE WERSJI 1.0
+Serwer: Linux z OpenSSH, Python 3.9+ oraz uprawnienia root lub pełne sudo.
+Wyłączanie haseł wymaga systemd, standardowej konfiguracji sshd, bez aktywnych
+sekcji Match i bez niestandardowych dyrektyw Include. Przy złożonej konfiguracji
+program odmawia tej operacji zamiast zgadywać jej skutki.
+Obsługiwane są zwykłe pliki AuthorizedKeysFile wewnątrz katalogu domowego konta.
+Symlinki i zewnętrzne źródła AuthorizedKeysCommand nie są modyfikowane.
+Lista nie obejmuje dostępów nadanych przez certyfikaty CA; program informuje,
+jeśli skonfigurowano TrustedUserCAKeys.
+Import prywatnych kluczy PPK v2/v3: RSA. Inne typy importuj w formacie OpenSSH.
+Ręczne dodawanie publicznych kluczy obsługuje typy rozpoznawane przez serwer.
+Przy zapisie sesji PuTTY jej nadpisanie wymaga potwierdzenia.
+
+DANE I KOPIE
+Hasła nie są zapisywane przez program na dysku ani w sesjach PuTTY. Pozostają
+w pamięci w czasie połączenia. Profile zapisują adres, port, login, metodę
+logowania i ścieżkę klucza, bez haseł. Profile (profiles.json) i znane klucze
+serwerów są w:
+%LOCALAPPDATA%\SSH_Keys_Generator
+Kopie authorized_keys na serwerze: /var/backups/ssh-keys-generator/
+Kopie ustawień SSH i transakcje: /var/lib/ssh-keys-generator/
+Kopie są dostępne dla root. Nie są automatycznie usuwane.
+Deinstalator nie usuwa Twoich kluczy, zapamiętanych serwerów ani sesji PuTTY.
+Program nie korzysta z ChatGPT, żadnego modelu AI ani płatnego API.
+
+WERYFIKACJA WYDANIA
+Wykonano testy automatyczne i lokalne testy autoryzacji rzeczywistym PuTTY,
+w tym odczyt zaszyfrowanego PPK. Operacje administracyjne są objęte testami
+logiki zabezpieczeń; nie wykonywano wdrożenia ani zmian na produkcyjnym VPS.
+Nie oznacza to certyfikacji bezpieczeństwa lub gwarancji zgodności z każdą
+niestandardową konfiguracją Linux. Pierwsze użycie administracyjne warto
+wykonać na serwerze testowym z dostępną konsolą awaryjną.
+Pliki EXE nie są podpisane komercyjnym certyfikatem wydawcy.
+
+ŹRÓDŁA TECHNICZNE
+Format PPK: https://www.puttyssh.org/0.83/htmldoc/AppendixC.html
+Paramiko: https://docs.paramiko.org/en/stable/api/client.html
+PuTTY: https://www.chiark.greenend.org.uk/~sgtatham/putty/
+
+BUDOWANIE ZE ŹRÓDEŁ
+Python 3.14 x64, zależności w requirements.txt. Testy: python -m pytest -q
+Użyj skryptu build.ps1, który osadza dokumentację, licencję
+i pomocniczy skrypt serwera. Parametr -Python wskazuje python.exe,
+a opcjonalny -InnoCompiler wskazuje ISCC.exe z Inno Setup 6.
+Pełna instrukcja budowania znajduje się w README.md repozytorium.

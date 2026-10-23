@@ -1,0 +1,5 @@
+paramiko==5.1.0
+cryptography==50.0.2
+argon2-cffi==25.1.0
+pyinstaller==6.22.3
+pytest==9.1.1
